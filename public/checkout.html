@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="/static/styles/style.css">
+
+    <style>
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        input {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #d11818;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #8e1212;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Checkout</h1>
+        <div>
+            <p>Total MRP: <span id="checkout-total-mrp"></span></p>
+            <p>Discount: <span id="checkout-discount"></span></p>
+            <p>Final Total: <span id="checkout-final-total"></span></p>
+        </div>
+        <form id="shipping-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" required>
+
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" required>
+
+            <label for="state">State:</label>
+            <input type="text" id="state" name="state" required>
+
+            <label for="zip">ZIP Code:</label>
+            <input type="text" id="zip" name="zip" required>
+
+            <label for="country">Country:</label>
+            <input type="text" id="country" name="country" required>
+
+            <button type="button" id="place-order-btn">Place Order</button>
+        </form>
+    </div>
+    <script>
+        const updateCheckoutTotals = () => {
+            const totalMRP = localStorage.getItem('totalMRP');
+            const discount = localStorage.getItem('discount');
+            const finalTotal = localStorage.getItem('finalTotal');
+
+            // Display totals on the checkout page
+            document.getElementById('checkout-total-mrp').textContent = totalMRP ? `₹${parseFloat(totalMRP).toFixed(2)}` : '₹0.00';
+            document.getElementById('checkout-discount').textContent = discount ? `₹${parseFloat(discount).toFixed(2)}` : '₹0.00';
+            document.getElementById('checkout-final-total').textContent = finalTotal ? `₹${parseFloat(finalTotal).toFixed(2)}` : '₹0.00';
+        };
+
+        const placeOrder = async () => {
+            const shippingDetails = {
+                name: document.getElementById('name').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                postalCode: document.getElementById('zip').value,
+                country: document.getElementById('country').value
+            };
+
+            const itemsString = localStorage.getItem('cartItems');
+            const items = itemsString ? JSON.parse(itemsString) : [];
+            const totalAmount = parseFloat(localStorage.getItem('totalMRP')) || 0;
+            const discount = parseFloat(localStorage.getItem('discount')) || 0;
+            const finalTotal = parseFloat(localStorage.getItem('finalTotal')) || 0;
+
+            // Update item formatting to match server expectations
+            const formattedItems = items.map(item => ({
+                productId: item.productId,  // Ensure itemId is replaced with productId
+                quantity: item.quantity
+            }));
+
+            const orderDetails = {
+                shippingDetails,
+                items: formattedItems,  // Ensure items are properly formatted
+                totalAmount,
+                discount,
+                finalTotal
+            };
+
+            try {
+                const response = await fetch('/cart/place-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderDetails)
+                });
+
+                if (response.ok) {
+                    const { message } = await response.json();
+                    alert(`Order placed successfully: ${message}`);
+                    localStorage.clear();
+                    window.location.href = '/order-confirmation';
+                } else {
+                    const { message } = await response.json();
+                    console.error('Failed to place order:', message);
+                    alert(`Failed to place order: ${message}`);
+                }
+            } catch (error) {
+                console.error('Error placing order:', error);
+                alert('Error placing order: Failed to place order');
+            }
+        };
+
+        // Event listener for 'Place Order' button
+        document.getElementById('place-order-btn').addEventListener('click', placeOrder);
+
+        // Update checkout totals on page load
+        updateCheckoutTotals();
+    </script>
+</body>
+</html>

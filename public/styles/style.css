@@ -1,0 +1,172 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url("https://png.pngtree.com/thumb_back/fh260/background/20201009/pngtree-black-friday-seamless-pattern-of-red-white-tags-with-shopping-icon-image_406229.jpg");
+    background-size: cover;
+    background-position: center;
+    margin: 100;
+    padding: 20;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    width: 80%; /* Decrease the width of the container */
+    max-width: 900px; /* Decrease the max-width to make it narrower */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    margin: 20px auto;
+}
+
+h1 {
+    color: #c63939;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+.product-image {
+    max-width: 100px; /* Adjust the size as needed */
+    max-height: 250px; /* Adjust the size as needed */
+    object-fit: cover; /* Ensures the image scales proportionally */
+    display: block;
+    margin: 0 auto; /* Centers the image */
+}
+
+select, input[type="number"], button {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+select {
+    width: 100px;
+}
+
+input[type="number"] {
+    width: 60px;
+}
+
+button {
+    background-color: #5b3735;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+}
+
+button:hover {
+    background-color: #c63939;
+}
+
+.remove-button {
+    background-color: #c63939;
+}
+
+.remove-button:hover {
+    background-color: #c63939;
+}
+
+.total-info {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.total-info p {
+    margin: 10px 0;
+}
+
+.total-info b {
+    color: #333;
+}
+
+.coupon-section {
+    margin-top: 20px;
+}
+
+.coupon-section form {
+    display: flex;
+    align-items: center;
+}
+
+.coupon-section input[type="text"] {
+    margin-right: 10px;
+    flex: 1;
+}
+
+.apply-coupon {
+    background-color: #c63939;
+    color: #fff;
+    border: none;
+}
+
+.apply-coupon:hover {
+    background-color: #c63939;
+}
+
+.proceed-button {
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #c63939;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.proceed-button:hover {
+    background-color: #ba814c;
+}
+
+/* Additional styles to ensure layout consistency */
+.product-info {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.product-details {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.back-button, .proceed-button, .apply-coupon {
+    background-color: #c63939;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+}
+
+.back-button:hover, .proceed-button:hover, .apply-coupon:hover {
+    background-color: #c63939;
+}

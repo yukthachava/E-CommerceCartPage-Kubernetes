@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <!-- Correct link to the stylesheet -->
+    <link rel="stylesheet" href="/static/styles/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Your Cart</h1>
+        <table id="cart-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Size</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody id="cart-body">
+                <tr>
+                    <td><a href="/product1"><img src="https://i.pinimg.com/originals/79/cc/ab/79ccab74209760d9fff9c2a106bc64c8.jpg" alt="Product 1" class="product-image"></a></td>
+                    <td><a href="/product1">Louis Philippe Jeans Men Brown Solid Slim Fit Pure Cotton Casual Shirt</a></td>
+                    <td class="price" data-price="2559">₹2559</td>
+                    <td>
+                        <select class="size-select" name="Size">
+                            <option value="v0">XS</option>
+                            <option value="v1">S</option>
+                            <option value="v2">M</option>
+                            <option value="v3">L</option>
+                            <option value="v4">XL</option>
+                        </select>
+                    </td>
+                    <td><input type="number" value="1" min="1" class="quantity"></td>
+                    <td class="total">₹2559</td>
+                    <td><button class="remove-button">Remove</button></td>
+                </tr>
+                <tr>
+                    <td><a href="/product2"><img src="https://d29c1z66frfv6c.cloudfront.net/pub/media/catalog/product/large/6b4dcfbe03a2753ca36d4023b04f0dcae7171dfd_xxl-1.jpg" alt="Product 2" class="product-image"></a></td>
+                    <td><a href="/product2">H&M Women V-neck Sweater Vest</a></td>
+                    <td class="price" data-price="1499">₹1499</td>
+                    <td>
+                        <select class="size-select" name="Size">
+                            <option value="v0">XS</option>
+                            <option value="v1">S</option>
+                            <option value="v2">M</option>
+                            <option value="v3">L</option>
+                            <option value="v4">XL</option>
+                        </select>
+                    </td>
+                    <td><input type="number" value="1" min="1" class="quantity"></td>
+                    <td class="total">₹1499</td>
+                    <td><button class="remove-button">Remove</button></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="total-info">
+            <p><b>Total MRP:</b> <span id="total-mrp">₹4058</span></p>
+            <p><b>Discount on MRP:</b> <span id="discount-value">₹0</span></p>
+            <p><b>Apply Coupon</b></p>
+            <div class="coupon-section">
+                <form id="coupon-form">
+                    <input type="text" id="coupon-code" name="coupon-code" placeholder="Enter coupon code">
+                    <button type="button" id="apply-coupon-btn" class="apply-coupon">Apply Coupon</button>
+                </form>
+                <p><b>Discount:</b> <span id="discount-percentage">0%</span></p>
+                <p><b>Total Amount:</b> <span id="total-amount">₹4058</span></p>
+            </div>
+            <p><b>Shipping:</b> To be calculated at checkout</p>
+            <p><b>Total Amount:</b> <span id="final-total-amount">₹4058</span></p>
+        </div>
+
+        <button id="proceed-button" class="proceed-button">Proceed to Checkout</button>
+    </div>
+    <script src="/static/js/cart.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartBody = document.getElementById('cart-body');
+            const applyCouponBtn = document.getElementById('apply-coupon-btn');
+
+            function updateTotals() {
+                let totalMRP = 0;
+                let discount = parseFloat(document.getElementById('discount-value').textContent.replace('₹', '')) || 0;
+                const rows = cartBody.querySelectorAll('tr');
+                const cartItems = []; // Store items here
+
+                rows.forEach(row => {
+                    const price = parseFloat(row.querySelector('.price').getAttribute('data-price'));
+                    const quantity = parseInt(row.querySelector('.quantity').value);
+                    const total = price * quantity;
+                    row.querySelector('.total').textContent = `₹${total}`;
+                    totalMRP += total;
+
+                    // Save each item in cartItems array
+                    cartItems.push({
+                        productId: row.querySelector('td:nth-child(2) a').getAttribute('href').split('/')[1], // Extract productId
+                        quantity: quantity
+                    });
+                });
+
+                const finalAmount = totalMRP - discount;
+
+                // Store values in localStorage
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                localStorage.setItem('totalMRP', totalMRP);
+                localStorage.setItem('discount', discount);
+                localStorage.setItem('finalTotal', finalAmount);
+
+                // Update the UI
+                document.getElementById('total-mrp').textContent = `₹${totalMRP}`;
+                document.getElementById('total-amount').textContent = `₹${totalMRP}`;
+                document.getElementById('final-total-amount').textContent = `₹${finalAmount}`;
+            }
+
+            cartBody.addEventListener('input', (event) => {
+                if (event.target.classList.contains('quantity')) {
+                    updateTotals();
+                }
+            });
+
+            applyCouponBtn.addEventListener('click', () => {
+                const couponCode = document.getElementById('coupon-code').value;
+                let discountPercentage = 0;
+
+                if (couponCode === 'DISCOUNT10') {
+                    discountPercentage = 10;
+                } else if (couponCode === 'DISCOUNT20') {
+                    discountPercentage = 20;
+                } else {
+                    alert('Invalid coupon code!');
+                    return;
+                }
+
+                const totalMRP = parseFloat(document.getElementById('total-mrp').textContent.replace('₹', ''));
+                const discountValue = (totalMRP * discountPercentage) / 100;
+                const finalAmount = totalMRP - discountValue;
+
+                document.getElementById('discount-percentage').textContent = `${discountPercentage}%`;
+                document.getElementById('discount-value').textContent = `₹${discountValue}`;
+                document.getElementById('total-amount').textContent = `₹${finalAmount}`;
+                document.getElementById('final-total-amount').textContent = `₹${finalAmount}`;
+
+                localStorage.setItem('discount', discountValue);
+                localStorage.setItem('finalTotal', finalAmount);
+            });
+
+            cartBody.addEventListener('click', (event) => {
+                if (event.target.classList.contains('remove-button')) {
+                    const row = event.target.closest('tr');
+                    row.remove();
+                    updateTotals();
+                }
+            });
+
+            document.getElementById('proceed-button').addEventListener('click', () => {
+                window.location.href = '/checkout';
+            });
+
+            updateTotals();
+        });
+    </script>
+</body>
+</html>

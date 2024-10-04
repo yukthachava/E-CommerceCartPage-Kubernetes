@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  nodejs:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/shopping_cart
+     # This mounts the current directory to /app in the container for real-time changes
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - .:/app
+    working_dir: /app
+
+
+
